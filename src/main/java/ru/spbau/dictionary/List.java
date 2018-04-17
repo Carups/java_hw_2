@@ -11,25 +11,15 @@ public class List {
             this.value = value;
             next = null;
         }
-
     }
-    private int size, version;
+
+    private int size;
     private Node head, tail;
 
     {
-        version = 0;
         size = 0;
         head = null;
         tail = null;
-    }
-
-    public int getVersion()
-    {
-        return version;
-    }
-    public void setVersion(int version)
-    {
-        this.version = version;
     }
 
     public void add(String key, String value) {
@@ -58,6 +48,7 @@ public class List {
         }
         return cur.value;
     }
+
     public String set(String key, String value) {
         Node cur = head;
         try {
@@ -108,8 +99,8 @@ public class List {
         }
         return ans;
     }
-    public String[] getKeys()
-    {
+
+    public String[] getKeys() {
         Node cur = head;
         String[] ans = new String[size];
         for (int i = 0; i < size; i++) {
@@ -118,8 +109,8 @@ public class List {
         }
         return ans;
     }
-    public String[] getValues()
-    {
+
+    public String[] getValues() {
         Node cur = head;
         String[] ans = new String[size];
         for (int i = 0; i < size; i++) {
@@ -128,6 +119,7 @@ public class List {
         }
         return ans;
     }
+
     public boolean contains(String key){
         Node cur = head;
         for (int i = 0; i < size; i++) {

@@ -1,19 +1,25 @@
 package ru.spbau.dictionary;
 
-import jdk.internal.util.xml.impl.Pair;
 
 public class HashTable implements Dictionary {
-    final int defaultSizeOfTable = 1024;
-    private int size, sizeOfTable, version;
+    private final int defaultSizeOfTable = 1024;
+    private int size, sizeOfTable;
     final private double rateDown, rateUp;
     private List[] table;
     private boolean rehashOn;
+
     {
         rehashOn = false;
         sizeOfTable = defaultSizeOfTable;
         table = new List[defaultSizeOfTable];
-        version = 0;
         size = 0;
+    }
+
+    HashTable(){
+        rateDown = 0.6;
+        // half sizeOfTable and call rehash() if ratio of size / sizeOfTable < rateDown
+        rateUp = 1.8;
+        // double sizeOfTable and call rehash() if ratio of size / sizeOfTable > rateUp
     }
 
     HashTable(double rateDown, double rateUp) {
@@ -42,11 +48,9 @@ public class HashTable implements Dictionary {
         return res;
     }
 
-    public String remove(String key)
-    {
+    public String remove(String key) {
         String res = table[getHashKey(key)].remove(key);
-        if (res != null)
-        {
+        if (res != null) {
             size--;
             if (size < sizeOfTable * rateDown) {
                 rehash(sizeOfTable / 2);
@@ -55,43 +59,22 @@ public class HashTable implements Dictionary {
         return res;
     }
 
-    public void clear()
-    {
+    public void clear() {
         size = 0;
-        version++;
-        rehash(defaultSizeOfTable);
+        table = new List[defaultSizeOfTable];
     }
 
-    private int getHashKey(String key)
-    {
-        int hashKey = ((key.hashCode() % sizeOfTable) + sizeOfTable) % sizeOfTable;
-        update(hashKey);
-        return hashKey;
+    private int getHashKey(String key) {
+        return ((key.hashCode() % sizeOfTable) + sizeOfTable) % sizeOfTable;
     }
 
-    private void update(int hashKey)
-    {
-        if (table[hashKey] == null) {
-            table[hashKey] = new List();
-            table[hashKey].setVersion(version);
-        }
-        else{
-            if (table[hashKey].getVersion() != version)
-            {
-                table[hashKey] = new List();
-                table[hashKey].setVersion(version);
-            }
-        }
-
-    }
 
     public int getSizeOfTable() {
         return sizeOfTable;
     }
 
-    private void rehash(int newSize)
-    {
-        if (newSize != sizeOfTable && newSize >= defaultSizeOfTable && rehashOn == false){
+    private void rehash(int newSize) {
+        if (newSize >= defaultSizeOfTable && !rehashOn){
             rehashOn = true;
             List[] oldTable = table;
             table = new List[newSize];
