@@ -6,19 +6,20 @@ public class HashTable implements Dictionary {
     private int size, sizeOfTable;
     final private double rateDown, rateUp;
     private List[] table;
-    private boolean rehashOn;
 
     {
-        rehashOn = false;
         sizeOfTable = defaultSizeOfTable;
         table = new List[defaultSizeOfTable];
+        for (int i = 0; i < defaultSizeOfTable; i++) {
+            table[i] = new List();
+        }
         size = 0;
     }
 
     HashTable(){
-        rateDown = 0.6;
+        rateDown = 0.4;
         // half sizeOfTable and call rehash() if ratio of size / sizeOfTable < rateDown
-        rateUp = 1.8;
+        rateUp = 2.1;
         // double sizeOfTable and call rehash() if ratio of size / sizeOfTable > rateUp
     }
 
@@ -40,6 +41,7 @@ public class HashTable implements Dictionary {
     }
 
     public String put(String key, String value) {
+
         String res = table[getHashKey(key)].put(key, value);
         size++;
         if (size > sizeOfTable * rateUp){
@@ -62,6 +64,9 @@ public class HashTable implements Dictionary {
     public void clear() {
         size = 0;
         table = new List[defaultSizeOfTable];
+        for (int i = 0; i < defaultSizeOfTable; i++) {
+            table[i] = new List();
+        }
     }
 
     private int getHashKey(String key) {
@@ -77,10 +82,12 @@ public class HashTable implements Dictionary {
     }
 
     private void rehash(int newSize) {
-        if (newSize >= defaultSizeOfTable && !rehashOn){
-            rehashOn = true;
+        if (newSize >= defaultSizeOfTable){
             List[] oldTable = table;
             table = new List[newSize];
+            for (int i = 0; i < newSize; i++) {
+                table[i] = new List();
+            }
             sizeOfTable = newSize;
             size = 0;
             for (List curList: oldTable) {
@@ -93,7 +100,6 @@ public class HashTable implements Dictionary {
                 }
             }
 
-            rehashOn = false;
         }
     }
 }

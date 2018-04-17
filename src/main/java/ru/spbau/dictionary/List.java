@@ -38,12 +38,10 @@ public class List {
 
     public String get(String key) {
         Node cur = head;
-        try {
-            while (!cur.key.equals(key)) {
-                cur = cur.next;
-            }
+        while (cur != null && !cur.key.equals(key)) {
+            cur = cur.next;
         }
-        catch (Exception e){
+        if (cur == null){
             return null;
         }
         return cur.value;
@@ -51,12 +49,10 @@ public class List {
 
     public String set(String key, String value) {
         Node cur = head;
-        try {
-            while (!cur.key.equals(key)) {
-                cur = cur.next;
-            }
+        while (cur != null && !cur.key.equals(key)) {
+            cur = cur.next;
         }
-        catch (Exception e){
+        if (cur == null){
             return null;
         }
         String ans = cur.value;
@@ -77,25 +73,24 @@ public class List {
     //}
 
     public String remove(String key) {
-        String ans;
-        try {
-            if (head.key.equals(key)) {
-                ans = head.value;
-                head = head.next;
-                size--;
+        String ans = null;
+        if (head == null)
+            return null;
+        if (head.key.equals(key)) {
+            ans = head.value;
+            head = head.next;
+            size--;
+        }
+        else{
+            Node cur = head;
+            while(cur.next != null && !cur.next.key.equals(key)) {
+                cur = cur.next;
             }
-            else{
-                Node cur = head;
-                while(!cur.next.key.equals(key)) {
-                    cur = cur.next;
-                }
+            if (cur.next != null) {
                 ans = cur.next.value;
                 cur.next = cur.next.next;
                 size--;
             }
-        }
-        catch (Exception e){
-            return null;
         }
         return ans;
     }
