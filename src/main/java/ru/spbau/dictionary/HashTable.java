@@ -65,6 +65,9 @@ public class HashTable implements Dictionary {
     }
 
     private int getHashKey(String key) {
+        if (key == null){
+            return 0;
+        }
         return ((key.hashCode() % sizeOfTable) + sizeOfTable) % sizeOfTable;
     }
 
